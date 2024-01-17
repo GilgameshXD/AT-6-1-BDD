@@ -42,6 +42,7 @@ public class MoneyTransferTest {
         assertEquals(expectedBalanceOnFirstCard, actualBalanceOnFirstCard);
         assertEquals(expectedBalanceOnSecondCard, actualBalanceOnSecondCard);
     }
+
     @Test
     void shouldTransferFromSecondToFirst() {
         var amount = generateValidAmount(firstCardBalance);
@@ -54,4 +55,17 @@ public class MoneyTransferTest {
         assertEquals(expectedBalanceOnFirstCard, actualBalanceOnFirstCard);
         assertEquals(expectedBalanceOnSecondCard, actualBalanceOnSecondCard);
     }
+
+    @Test
+    void shouldShowErrorMessage() {
+        var amount = generateInvalidAmount(secondCardBalance);
+        var transferPage = dashboardPage.selectCardToTransfer(firstCardInfo);
+        transferPage.makeTransfer(String.valueOf(amount), secondCardInfo);
+        transferPage.findErrorMessage("Невозможно совершить перевод. На счёте недостаточно средств.");
+        var actualBalanceOnFirstCard = dashboardPage.getCardBalance(firstCardInfo);
+        var actualBalanceOnSecondCard = dashboardPage.getCardBalance(secondCardInfo);
+        assertEquals(firstCardBalance, actualBalanceOnFirstCard);
+        assertEquals(secondCardBalance, actualBalanceOnSecondCard);
+    }
+
 }
